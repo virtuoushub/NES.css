@@ -7,3 +7,6 @@ storybook-static
 # Ignoring built up css and map files
 scss/*.css
 scss/*.css.map
+scss/*.css.map
+**/backstop_data/bitmaps_test/
+**/backstop_data/html_report/
