@@ -124,7 +124,7 @@
       "git add"
     ],
     "*.js": [
-      "eslint '.storybook/**/*.js' 'story/**/*.js'"
+      "eslint '.storybook/**/*.js' 'story/**/*.js' 'docs/**/*.js' 'tests/**/*.js'"
     ]
   },
   "prettier": {
