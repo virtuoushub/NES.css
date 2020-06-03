@@ -1,5 +1,5 @@
 orbs:
-  node: circleci/node@2.1.0
+  node: circleci/node@3.0.0
 version: 2.1
 
 defaults: &defaults
@@ -105,6 +105,21 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Build the Framework
+          command: npm run build
+
+      - save_cache:
+          name: Save Build Cache
+          key: build-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - css
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - css
+
   build-in-all-supported-versions-of-node:
     <<: *defaults
 
@@ -123,28 +138,9 @@ jobs:
           name: Move node_modules to correct location for build
           command: "[ ! -d \"node_modules_<< parameters.node-version >>\" ] || mv \"node_modules_<< parameters.node-version >>\" node_modules"
 
-      - restore_cache:
-          name: Restore Build Cache
-          keys:
-            - build-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
-            - build-{{ .Branch }}
-            - build-master
-            - build-
-
       - run:
           name: Build the Framework
           command: npm run build
-
-      - save_cache:
-          name: Save Build Cache
-          key: build-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - css
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - css
 
   lint:
     <<: *defaults
@@ -245,6 +241,7 @@ workflows:
       - release:
           requires:
             - commitlint
+            - build
             - build-in-all-supported-versions-of-node
             - lint
             # - test
